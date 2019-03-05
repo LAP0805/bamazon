@@ -18,10 +18,11 @@
   "homepage": "https://github.com/LesleyPond/bamazon#readme",
   "dependencies": {
     "chalk": "^2.4.2",
+    "console.table": "^0.10.0",
     "dotenv": "^6.2.0",
     "inquirer": "^6.2.2",
     "mysql": "^2.16.0",
-    "mysql-table": "^2.2.7",
     "strpad": "^1.0.2"
-  }
+  },
+  "devDependencies": {}
 }
