@@ -1,4 +1,4 @@
-# bamazon
+# Bamazon #
 
 
 Hello! Welcome to the Bamazon Node App! 

@@ -91,16 +91,16 @@ function placeOrder(){
                     }
                     else{connection.query("update products set stock_quantity =(stock_quantity -" + amount + ") where item_id =" + itemID, function(error,response){
                             if (error) throw error;
-                            
+                            connection.query("update products set items_sold =(items_sold +" + amount + ") where item_id =" + itemID, function(error,response){
+                                if (error) throw error;
+                                connection.query(" update supervisor set product_sales = (select sum(products.items_sold * products.price) from products where products.department_name = supervisor.department_name) where department_name = department_name;", function(error,response){
+                                    if (error) throw error;
+                                    
+                            }) 
+                        }) 
                     })
-                    connection.query("update products set items_sold =(items_sold +" + amount + ") where item_id =" + itemID, function(error,response){
-                        if (error) throw error;
-                        
-                })
-                connection.query(" update supervisor set product_sales = (select sum(products.items_sold * products.price) from products where products.department_name = supervisor.department_name) where department_name = department_name;", function(error,response){
-                    if (error) throw error;
-                    
-            })
+                   
+               
                     console.log(`\n Congrats! you bought ${amount} x ${response[0].product_name}`)
                     console.log(chalk
                         `\n Total Cost: $ {green ${amount * response[0].price}}\n`)
