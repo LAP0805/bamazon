@@ -66,7 +66,7 @@ function showProducts(){
 }
 
 function lowInventory(){
-    connection.query(" select * from products where stock_quantity < 5", function(error, response){
+    connection.query(" select * from products where stock_quantity < 10", function(error, response){
         if (error){
             throw error
         }
@@ -86,6 +86,11 @@ function lowInventory(){
 
 function addInventory(){
         inquirer.prompt([
+            {
+                name: "departmentName",
+                message: "What is the department you would like to add a product to?",
+                type: "input",
+            },
             {
                 name: "whichProduct",
                 message: "What is the ID of the product you would like to stock?",
@@ -113,15 +118,22 @@ function addInventory(){
                 }
             }
         ]).then(function(response){
+            let departmentName = response.departmentName
             let item = response.whichProduct;
             let howMany= response.howMany;
             connection.query("update products set stock_quantity =(stock_quantity +" + howMany +" ) where item_id =" + item, function(error, response){
                 if (error) {
                     throw error;
                 }
-                
-                showProducts()
+                connection.query("update supervisor set over_head_costs = over_head_costs + (select sum(products.item_cost *" + howMany + ") from products where item_id =" + item + ") where department_name = '" + departmentName + "'"
+             ,function(error, response){
+                if (error) {
+                    throw error;
+                }
+            }) 
             })
+            
+            showProducts()
         })
 }
 
@@ -135,6 +147,11 @@ function addProduct(){
         {
             name: "price",
             message: "Enter product price (do not include dollar sign):",
+            type: "input"
+        },
+        {
+            name: "cost",
+            message: "What does the item cost the company?(do not include dollar sign)",
             type: "input"
         },
         {
@@ -152,12 +169,18 @@ function addProduct(){
         let price = response.price;
         let department = response.department;
         let inStock = response.inStock;
-        connection.query("insert into products (product_name, price, department_name, stock_quantity) values ('" + name + "','" + price + "','" + department + "','" + inStock + "')", function(error, response){
+        let cost= response.cost;
+        connection.query("insert into products (product_name, price, department_name, stock_quantity, item_cost) values ('" + name + "','" + price + "','" + department + "','" + inStock + "','" + cost+ "')", function(error, response){
             if(error) {
                 throw error;
             }
-            console.log(response);
+            connection.query("update supervisor set over_head_costs = over_head_costs + (select sum("+cost +"*"+inStock+" ))  where department_name ='" + department+ "'", function(error, response){
+                if(error) {
+                    throw error;
+                }
+            })
             showProducts();
         })
     })
 }
+
