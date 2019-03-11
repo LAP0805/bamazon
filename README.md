@@ -18,4 +18,4 @@ This app has three sections, which allows the user to do different things!
  * See overall product sales, overhead costs and profits
  * Add a department
 
-This app will only run with the attached database, so to see a demo please visit: http://www.youtube.com/something.
+This app will only run with the attached database, so to see screenshots please visit https://drive.google.com/open?id=1wEp_34UFon9vbWi7V9fbHS_xwi0ueQoJ
